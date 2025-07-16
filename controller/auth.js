@@ -24,9 +24,10 @@ const signup = async (req, res) => {
   }
 };
 
-
 const login = async (req, res) => {
   const { username, password } = req.body;
+
+  console.log("Login Attempt:", username, password); // Debug
 
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password required' });
@@ -35,12 +36,14 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+      console.log('User not found');
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid password' });
+      console.log('Password mismatch');
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
@@ -51,7 +54,7 @@ const login = async (req, res) => {
 
     res.json({ token });
   } catch (err) {
-    console.error('Login Error:', err.message);
+    console.error('Login Error:', err.message); // 🧠 See error message
     res.status(500).json({ error: 'Login failed', details: err.message });
   }
 };
