@@ -12,13 +12,13 @@ const test = async (req , res) => {
 const createBlog = async (req, res) => {
   try {
     const { blog, headline, author } = req.body
-    const image = req.file ? req.file.filename : ''
+
 
     const newBlog = new Blog({
       blog,
       headline,
       author,
-      image
+      image: req.file?.path ,
     })
 
     await newBlog.save()
